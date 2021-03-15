@@ -73,6 +73,9 @@ module API
             end
           end
 
+          mount ::API::V3::Users::Schemas::UserSchemaAPI
+          mount ::API::V3::Users::CreateFormAPI
+
           params do
             requires :id, desc: 'User\'s id'
           end

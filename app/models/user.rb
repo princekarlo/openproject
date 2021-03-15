@@ -55,6 +55,9 @@ class User < Principal
     USER_MAIL_OPTION_NON
   ].freeze
 
+  USER_LOGIN_REGEX = /\A[a-z0-9_\-@.+ ]*\z/i.freeze
+  USER_MAIL_REGEX = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i.freeze
+
   include ::Associations::Groupable
   extend DeprecatedAlias
 
@@ -117,10 +120,10 @@ class User < Principal
   validates_uniqueness_of :login, if: Proc.new { |user| !user.login.blank? }, case_sensitive: false
   validates_uniqueness_of :mail, allow_blank: true, case_sensitive: false
   # Login must contain letters, numbers, underscores only
-  validates_format_of :login, with: /\A[a-z0-9_\-@.+ ]*\z/i
+  validates_format_of :login, with: USER_LOGIN_REGEX
   validates_length_of :login, maximum: 256
   validates_length_of :firstname, :lastname, maximum: 256
-  validates_format_of :mail, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, allow_blank: true
+  validates_format_of :mail, with: USER_MAIL_REGEX, allow_blank: true
   validates_length_of :mail, maximum: 256, allow_nil: true
   validates_confirmation_of :password, allow_nil: true
   validates_inclusion_of :mail_notification, in: MAIL_NOTIFICATION_OPTIONS.map(&:first), allow_blank: true
